@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0a0a0b">
+<title>NEXAR ESPORTS</title>
+<style>
+:root{--bg:#0a0a0b;--p:#141416;--p2:#1c1c1f;--ln:#2a2a2e;--red:#e6392f;--gold:#e8b23d;--grn:#35c46a;--org:#f08a24;--tx:#f4f2ee;--mu:#8b8b92;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:15px/1.4 -apple-system,system-ui,'Segoe UI',Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:.3px}
+[hidden]{display:none!important}
+#splash{position:fixed;inset:0;background:radial-gradient(circle at 50% 40%,#2a0d0b,#0a0a0b 65%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .35s}
+#splash.out{opacity:0;pointer-events:none}
+.sp-logo{width:76px;height:76px;background:var(--red);border-radius:18px;display:grid;place-items:center;font-size:30px;font-weight:900;box-shadow:0 0 40px rgba(230,57,47,.55);animation:pop .6s ease}
+.sp-name{font-size:22px;letter-spacing:3px}.sp-name b{color:var(--red)}
+.sp-bar{width:140px;height:3px;background:var(--p2);border-radius:2px;overflow:hidden}.sp-bar i{display:block;height:100%;width:40%;background:var(--red);animation:slide 1s infinite}
+.sp-sub{color:var(--mu);font-size:12px}
+@keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}@keyframes pop{from{transform:scale(.6);opacity:0}}
+#app{max-width:520px;margin:0 auto;min-height:100%;padding-top:var(--st)}
+#top{position:sticky;top:0;z-index:20;background:rgba(10,10,11,.96);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:54px}
+.logo{width:34px;height:34px;background:var(--red);border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:13px}
+.brand{flex:1;font-weight:800;letter-spacing:1.5px;font-size:14px}.brand b{color:var(--red)}
+.bk{width:34px;height:34px;border-radius:50%;background:var(--p2);border:1px solid var(--ln);display:grid;place-items:center;cursor:pointer;font-size:17px}
+.tag{font-size:10.5px;font-weight:800;letter-spacing:1px;padding:4px 10px;background:var(--red);clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)}
+#view{padding:14px 14px calc(84px + var(--sb))}
+#tabs{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;display:flex;background:rgba(10,10,11,.97);border-top:1px solid var(--ln);padding-bottom:var(--sb);z-index:30}
+#tabs button{flex:1;background:none;border:0;border-top:2px solid transparent;padding:8px 0 7px;color:var(--mu);font-weight:800;font-size:11.5px;letter-spacing:1.2px;cursor:pointer}
+#tabs button span{display:block;font-size:18px}
+#tabs button.on{color:var(--red);border-top-color:var(--red);text-shadow:0 0 14px rgba(230,57,47,.8)}
+.card{background:var(--p);border:1px solid var(--ln);border-radius:13px;padding:13px;margin-bottom:11px}
+.hero{background:linear-gradient(150deg,#241012,var(--bg) 70%);border:1px solid var(--ln);border-radius:14px;padding:18px;margin-bottom:14px}
+.hero h1{font-size:24px;line-height:1.05}.hero h1 em{color:var(--red);font-style:normal}.hero p{color:var(--mu);margin:8px 0 0;font-size:13px}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 15px;border-radius:20px;border:1px solid var(--ln);background:none;color:var(--mu);font-weight:700;font-size:12.5px;cursor:pointer}
+.chip.on{border-color:var(--red);color:var(--red);background:rgba(230,57,47,.09)}
+.st{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.6px;padding:3px 9px;border-radius:12px}
+.st.OPEN{background:rgba(53,196,106,.15);color:var(--grn)}.st.LIVE{background:rgba(240,138,36,.16);color:var(--org)}.st.FINISHED{background:rgba(230,57,47,.16);color:var(--red)}.st.DRAFT{background:rgba(255,255,255,.08);color:var(--mu)}
+.tc{position:relative;cursor:pointer}.tc.FINISHED{border-left:3px solid var(--red)}.tc.OPEN{border-left:3px solid var(--grn)}.tc.LIVE{border-left:3px solid var(--org)}
+.row{display:flex;align-items:center;gap:10px}.sp{flex:1}.mu{color:var(--mu)}.sm{font-size:12px}.gold{color:var(--gold)}
+.mode{font-size:11px;font-weight:800;color:var(--red);border:1px solid var(--red);border-radius:5px;padding:1px 7px;letter-spacing:1px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--mu);margin-top:8px}.meta b{color:var(--tx)}
+.bar{height:4px;background:var(--p2);border-radius:2px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--red)}
+.btn{display:block;width:100%;padding:13px;border:0;border-radius:10px;background:var(--red);color:#fff;font-weight:800;letter-spacing:.6px;cursor:pointer;text-align:center}
+.btn:active{transform:scale(.98)}.btn[disabled]{opacity:.45}
+.btn.g{background:var(--p2);border:1px solid var(--ln)}.btn.gd{background:var(--gold);color:#1a1405}.btn.ok{background:var(--grn);color:#04150b}.btn.no{background:none;border:1px solid var(--red);color:var(--red)}.btn.s{padding:9px;font-size:13px}
+.brow{display:flex;gap:8px;margin-top:10px}.brow .btn{flex:1}
+label{display:block;font-size:12px;color:var(--mu);margin:12px 0 5px}
+input,select,textarea{width:100%;background:var(--p2);border:1px solid var(--ln);border-radius:9px;padding:11px 12px;outline:0}
+input:focus,select:focus,textarea:focus{border-color:var(--red)}
+h3.sec{font-size:13px;letter-spacing:1px;color:var(--mu);margin:18px 0 9px;text-transform:uppercase;display:flex;justify-content:space-between}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.slot{aspect-ratio:1;background:var(--p);border:1.5px dashed var(--ln);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;padding:3px;overflow:hidden}
+.slot .n{position:absolute;top:3px;left:6px;font-size:9px;color:var(--mu);font-weight:800}
+.slot.sel{border-color:var(--red);background:rgba(230,57,47,.1)}
+.slot.pending{border:1.5px solid var(--org);background:rgba(240,138,36,.08)}.slot.approved{border:1.5px solid var(--grn)}.slot.mine{box-shadow:0 0 0 2px var(--gold)}
+.slot .nk{font-size:9.5px;text-align:center;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{width:30px;height:30px;border-radius:50%;background:var(--p2);overflow:hidden;display:grid;place-items:center;font-weight:800;color:var(--red);flex:none;font-size:13px}.av img{width:100%;height:100%;object-fit:cover}.av.l{width:64px;height:64px;font-size:24px;border:2px solid var(--red)}
+.bracket{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity}
+.rd{flex:none;width:200px;display:flex;flex-direction:column;justify-content:space-around;gap:10px;scroll-snap-align:start}
+.rd h4{margin:0 0 4px;font-size:11px;letter-spacing:1.2px;color:var(--red)}
+.mc{background:var(--p);border:1px solid var(--ln);border-radius:10px;overflow:hidden;cursor:pointer}
+.mc div{padding:8px 10px;font-size:13px;display:flex;justify-content:space-between;gap:6px}.mc div+div{border-top:1px solid var(--ln)}
+.mc .w{background:rgba(232,178,61,.14);color:var(--gold);font-weight:800}.mc .e{color:var(--mu)}.mc.mine{border-color:var(--gold)}
+.champ{background:linear-gradient(160deg,#2b2109,#141416);border:1px solid var(--gold);border-radius:14px;padding:18px;text-align:center;box-shadow:0 0 30px rgba(232,178,61,.18)}
+.champ .t{font-size:34px}.champ b{display:block;color:var(--gold);font-size:20px;margin-top:4px}
+.stats{display:flex;gap:9px;margin:4px 0 14px}.stats div{flex:1;background:var(--p);border:1px solid var(--ln);border-radius:11px;padding:11px 4px;text-align:center}.stats b{display:block;font-size:20px;color:var(--red)}.stats span{font-size:10px;color:var(--mu);letter-spacing:.6px}
+.bg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bd{background:var(--p);border:1px solid var(--ln);border-radius:11px;padding:10px 4px;text-align:center;opacity:.32}.bd.on{opacity:1;border-color:var(--gold);background:rgba(232,178,61,.07);box-shadow:0 0 14px rgba(232,178,61,.12)}.bd.on.ch{background:rgba(232,178,61,.16)}
+.bd i{display:block;font-style:normal;font-size:24px}.bd span{font-size:9.5px;color:var(--mu);font-weight:700}
+.state{text-align:center;padding:36px 12px;color:var(--mu)}.state i{display:block;font-style:normal;font-size:38px;margin-bottom:8px}.state.err{color:var(--red)}
+.sk{height:84px;border-radius:13px;margin-bottom:11px;background:linear-gradient(90deg,var(--p) 25%,var(--p2) 50%,var(--p) 75%);background-size:200% 100%;animation:sh 1.2s infinite}@keyframes sh{to{background-position:-200% 0}}
+#sheetBg{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+#sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--bg);border-top:1px solid var(--ln);border-radius:18px 18px 0 0;padding:16px 16px calc(18px + var(--sb))}
+#toast{position:fixed;left:50%;bottom:calc(90px + var(--sb));transform:translateX(-50%) translateY(20px);background:var(--p2);border:1px solid var(--ln);padding:11px 16px;border-radius:10px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:86%;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%)}#toast.err{border-color:var(--red)}#toast.ok{border-color:var(--grn)}
+.ar{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--ln)}.ar:last-child{border:0}
+.pill{font-size:10px;font-weight:800;padding:2px 8px;border-radius:9px;background:var(--p2)}.pill.sent{color:var(--grn)}.pill.failed{color:var(--red)}.pill.skipped{color:var(--org)}
+.room{background:rgba(53,196,106,.08);border:1px solid var(--grn);border-radius:10px;padding:10px;margin-top:8px;font-size:13px}
+.hint{font-size:11.5px;color:var(--mu);margin-top:5px}
+
+</style>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<div id="splash"><div class="sp-logo">NX</div><div class="sp-name">NEXAR <b>ESPORTS</b></div><div class="sp-bar"><i></i></div><div class="sp-sub" id="spSub">Yuklanmoqda...</div></div>
+<div id="app" hidden>
+  <header id="top"></header>
+  <main id="view"></main>
+  <nav id="tabs">
+    <button data-act="tab" data-tab="turnir" class="on"><span>🏆</span>TURNIR</button>
+    <button data-act="tab" data-tab="profil"><span>👤</span>PROFIL</button>
+  </nav>
+</div>
+<div id="sheetBg" hidden><div id="sheet"></div></div>
+<div id="toast"></div>
+<script>
+(function (root) {
+'use strict';
+const ADMIN_ID = '7951717415', KEY = 'nexar_local_v1';
+class E extends Error { constructor(c, m) { super(m); this.code = c; } }
+const bad = (m) => new E(400, m);
+const BADGES = [[1,'CHAMPION','CHAMPION',"Turnir g'olibi",'🏆'],[2,'ELITE','ELITE',"Elite darajadagi o'yinchi",'⚡'],[3,'MVP','MVP',"Eng yaxshi o'yinchi",'🔥'],[4,'SNIPER','SNIPER',"Aniqligi yuqori o'yinchi",'🎯'],[5,'VETERAN','VETERAN',"Ko'p turnirlarda qatnashgan",'🛡️'],[6,'LEGEND','LEGEND','Maxsus yuqori daraja','💎'],[7,'TOP','TOP PLAYER',"Reytingdagi kuchli o'yinchi",'👑'],[8,'RISING','RISING STAR',"Tez rivojlanayotgan o'yinchi",'🚀']]
+  .map(([id, code, name, description, icon]) => ({ id, code, name, description, icon }));
+const TYPES = ['TDM', 'LIVIK', 'ERANGEL', 'BOSHQA'], STATUSES = ['DRAFT', 'OPEN', 'LIVE', 'FINISHED'];
+let S;
+function load() { try { S = JSON.parse(root.localStorage.getItem(KEY)); } catch (e) { S = null; }
+  if (!S || !S.users) S = { users: {}, tournaments: [], participants: [], applications: [], matches: [], brackets: {}, userBadges: [], results: [], notifications: [], seq: 1 }; }
+const save = () => root.localStorage.setItem(KEY, JSON.stringify(S));
+const nid = () => S.seq++;
+const now = () => Date.now();
+
+const getUser = (id) => S.users[String(id)];
+const pubU = (u) => u && ({ telegram_id: u.telegram_id, username: u.username, first_name: u.first_name, nickname: u.nickname, pubg_id: u.pubg_id, photo_url: u.photo_url, wins: u.wins, losses: u.losses });
+const getT = (id) => { const t = S.tournaments.find((x) => x.id === Number(id)); if (!t) throw new E(404, 'Turnir topilmadi.'); return t; };
+const badgesOf = (id) => S.userBadges.filter((x) => x.user_id === String(id)).map((x) => BADGES.find((b) => b.id === x.badge_id)).sort((a, b) => a.id - b.id);
+const roundName = (r, rounds) => { const rem = rounds - r; return rem === 0 ? 'FINAL' : rem === 1 ? 'YARIM FINAL' : rem === 2 ? 'CHORAK FINAL' : `1/${2 ** rem} FINAL`; };
+const str = (v, min, max, label) => { const s = String(v == null ? '' : v).trim(); if (s.length < min || s.length > max || /[\p{C}<>]/u.test(s)) throw bad(`${label} noto'g'ri (${min}-${max} belgi).`); return s; };
+function notify(uid, type) { S.notifications.push({ id: nid(), user_id: String(uid), type, status: 'skipped', error: 'Bot yo\'q (bitta faylli versiya)', created_at: now() }); if (S.notifications.length > 200) S.notifications.shift(); }
+function profileOf(id) {
+  const u = getUser(id); if (!u) throw new E(404, "O'yinchi topilmadi.");
+  const mine = S.participants.filter((p) => p.user_id === u.telegram_id && p.status === 'approved');
+  const history = mine.map((p) => { const t = S.tournaments.find((x) => x.id === p.tournament_id); const r = S.results.find((x) => x.tournament_id === t.id && x.user_id === u.telegram_id); return { id: t.id, name: t.name, type: t.type, status: t.status, placement: r ? r.placement : null, created_at: t.created_at }; })
+    .filter((h) => h.status !== 'DRAFT').sort((a, b) => b.created_at - a.created_at).slice(0, 30);
+  return { ...pubU(u), badges: badgesOf(id), tournaments: mine.length, history };
+}
+const findM = (tid, round, pos) => S.matches.find((m) => m.tournament_id === tid && m.round === round && m.position === pos);
+function advance(m) {
+  const br = S.brackets[m.tournament_id]; if (!br || m.round >= br.rounds) return null;
+  const nx = findM(m.tournament_id, m.round + 1, Math.ceil(m.position / 2));
+  nx[m.position % 2 === 1 ? 'player1_id' : 'player2_id'] = m.winner_id; return nx;
+}
+function generateBracket(tid) {
+  const parts = S.participants.filter((p) => p.tournament_id === tid && p.status === 'approved').sort((a, b) => a.slot - b.slot).map((p) => p.user_id);
+  if (parts.length < 2) throw bad("Setka uchun kamida 2 ta tasdiqlangan ishtirokchi kerak.");
+  if (S.matches.some((m) => m.tournament_id === tid && m.winner_id && !(m.round === 1 && !m.player2_id))) throw new E(409, "Natijalar kiritilgan, setkani qayta yaratib bo'lmaydi.");
+  let size = 2; while (size < parts.length) size *= 2;
+  const rounds = Math.log2(size), byes = size - parts.length;
+  S.matches = S.matches.filter((m) => m.tournament_id !== tid); S.brackets[tid] = { rounds };
+  const mk = (round, position, p1, p2) => { const m = { id: nid(), tournament_id: tid, round, position, player1_id: p1 || null, player2_id: p2 || null, winner_id: null, room: null, room_pass: null }; S.matches.push(m); return m; };
+  let i = 0; const bye = [];
+  for (let pos = 1; pos <= size / 2; pos++) { const p1 = parts[i++]; const p2 = pos <= byes ? null : parts[i++]; const m = mk(1, pos, p1, p2); if (!p2) bye.push(m); }
+  for (let r = 2; r <= rounds; r++) for (let pos = 1; pos <= size / 2 ** r; pos++) mk(r, pos);
+  for (const m of bye) { m.winner_id = m.player1_id; advance(m); }
+  return { rounds, players: parts.length, byes };
+}
+function finishTournament(t, champId, runnerUp) {
+  t.status = 'FINISHED'; t.champion_id = champId;
+  S.results = S.results.filter((r) => r.tournament_id !== t.id);
+  S.results.push({ tournament_id: t.id, user_id: champId, placement: 1 }); if (runnerUp) S.results.push({ tournament_id: t.id, user_id: runnerUp, placement: 2 });
+  if (!S.userBadges.some((x) => x.user_id === champId && x.badge_id === 1)) S.userBadges.push({ user_id: champId, badge_id: 1, awarded_by: 'system', created_at: now() });
+  notify(champId, 'champion');
+}
+function tInput(b) {
+  const type = String(b.type || '').toUpperCase(); if (!TYPES.includes(type)) throw bad("O'yin turi noto'g'ri.");
+  const slots = Number(b.max_slots); if (!Number.isInteger(slots) || slots < 2 || slots > 128) throw bad("Slot soni 2 dan 128 gacha bo'lishi kerak.");
+  const date = String(b.date || ''), time = String(b.time || '');
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) throw bad('Sana formati YYYY-MM-DD.'); if (time && !/^\d{2}:\d{2}$/.test(time)) throw bad('Vaqt formati HH:MM.');
+  return { name: str(b.name, 3, 60, 'Turnir nomi'), type, map: String(b.map || '').trim().slice(0, 40), date, time, max_slots: slots, description: String(b.description || '').trim().slice(0, 500) };
+}
+const getMatch = (id) => { const m = S.matches.find((x) => x.id === Number(id)); if (!m) throw new E(404, 'Match topilmadi.'); return m; };
+const isApproved = (tid, uid) => S.participants.some((p) => p.tournament_id === tid && p.user_id === String(uid) && p.status === 'approved');
+
+const routes = []; const route = (method, pattern, admin, fn) => routes.push({ method, admin, fn, re: new RegExp('^' + pattern.replace(/:(\w+)/g, '(?<$1>[^/]+)') + '$') });
+route('GET', '/api/me', 0, (c) => ({ ...profileOf(c.id), isAdmin: c.isAdmin, needsSetup: !getUser(c.id).pubg_id }));
+route('POST', '/api/me/profile', 0, (c) => {
+  const pubg = String(c.body.pubg_id == null ? '' : c.body.pubg_id); if (!/^\d{5,15}$/.test(pubg)) throw bad("PUBG ID faqat raqamlardan iborat bo'lishi kerak (5-15 raqam).");
+  const nick = str(c.body.nickname, 2, 24, 'NIK');
+  if (Object.values(S.users).some((u) => u.pubg_id === pubg && u.telegram_id !== c.id)) throw bad('Bu PUBG ID boshqa akkauntga ulangan.');
+  const u = getUser(c.id); u.pubg_id = pubg; u.nickname = nick; return profileOf(c.id);
+});
+route('GET', '/api/tournaments', 0, (c) => ({ tournaments: S.tournaments.filter((t) => c.isAdmin || t.status !== 'DRAFT')
+  .map((t) => ({ ...t, taken: S.participants.filter((p) => p.tournament_id === t.id).length, champion_nick: t.champion_id ? (getUser(t.champion_id) || {}).nickname : null }))
+  .sort((a, b) => ({ OPEN: 0, LIVE: 1, DRAFT: 2, FINISHED: 3 }[a.status] - { OPEN: 0, LIVE: 1, DRAFT: 2, FINISHED: 3 }[b.status]) || b.created_at - a.created_at) }));
+route('GET', '/api/tournaments/:id', 0, (c) => {
+  const t = getT(c.params.id); if (t.status === 'DRAFT' && !c.isAdmin) throw new E(404, 'Turnir topilmadi.');
+  const participants = S.participants.filter((p) => p.tournament_id === t.id).sort((a, b) => a.slot - b.slot).map((p) => { const u = getUser(p.user_id); return { id: p.id, slot: p.slot, status: p.status, telegram_id: u.telegram_id, nickname: u.nickname, pubg_id: c.isAdmin ? u.pubg_id : undefined, username: u.username, first_name: u.first_name, photo_url: u.photo_url }; });
+  const br = S.brackets[t.id];
+  const matches = S.matches.filter((m) => m.tournament_id === t.id).sort((a, b) => a.round - b.round || a.position - b.position).map((m) => {
+    const mine = m.player1_id === c.id || m.player2_id === c.id, see = c.isAdmin || mine;
+    return { id: m.id, round: m.round, position: m.position, round_name: br ? roundName(m.round, br.rounds) : '', p1: pubU(getUser(m.player1_id)) || null, p2: pubU(getUser(m.player2_id)) || null, winner_id: m.winner_id, room: see ? m.room : null, room_pass: see ? m.room_pass : null, room_set: !!(m.room || m.room_pass), mine };
+  });
+  const results = S.results.filter((r) => r.tournament_id === t.id).sort((a, b) => a.placement - b.placement).map((r) => { const u = getUser(r.user_id); return { placement: r.placement, telegram_id: u.telegram_id, nickname: u.nickname, photo_url: u.photo_url }; });
+  const mine = participants.find((p) => p.telegram_id === c.id);
+  return { tournament: t, participants, rounds: br ? br.rounds : 0, matches, results, my: mine ? { slot: mine.slot, status: mine.status } : null };
+});
+route('POST', '/api/tournaments/:id/apply', 0, (c) => {
+  const t = getT(c.params.id), me = getUser(c.id);
+  if (!me.pubg_id) throw bad('Avval PUBG ID va NIK kiriting.'); if (t.status === 'DRAFT') throw new E(404, 'Turnir topilmadi.');
+  if (t.status === 'FINISHED') throw bad('Turnir yakunlangan.'); if (t.status !== 'OPEN') throw bad('Hozir qabul yopiq.');
+  const ps = S.participants.filter((p) => p.tournament_id === t.id);
+  if (ps.some((p) => p.user_id === c.id)) throw bad('Siz allaqachon ishtirokchisiz.');
+  const taken = new Set(ps.map((p) => p.slot)); if (taken.size >= t.max_slots) throw bad("TURNIR TO'LDI.");
+  let slot = c.body.slot ? Number(c.body.slot) : null;
+  if (slot !== null) { if (!Number.isInteger(slot) || slot < 1 || slot > t.max_slots) throw bad("Slot noto'g'ri."); if (taken.has(slot)) throw bad('Bu slot band.'); } else { slot = 1; while (taken.has(slot)) slot++; }
+  S.participants.push({ id: nid(), tournament_id: t.id, user_id: c.id, slot, status: 'pending' });
+  S.applications.push({ id: nid(), tournament_id: t.id, user_id: c.id, slot, status: 'pending', reason: null, created_at: now() });
+  notify(c.id, 'applied'); return { ok: true, slot };
+});
+route('GET', '/api/players', 0, (c) => {
+  const q = String(c.query.get('q') || '').trim().slice(0, 30).toLowerCase(); if (q.length < 2) return { players: [] };
+  return { players: Object.values(S.users).filter((u) => u.pubg_id && ((u.nickname || '').toLowerCase().includes(q) || u.pubg_id.includes(q))).sort((a, b) => b.wins - a.wins).slice(0, 20).map((u) => ({ ...pubU(u), badges: badgesOf(u.telegram_id) })) };
+});
+route('GET', '/api/players/:id', 0, (c) => profileOf(c.params.id));
+route('GET', '/api/badges', 0, () => ({ badges: BADGES }));
+
+route('POST', '/api/admin/tournaments', 1, (c) => { const v = tInput(c.body); const t = { id: nid(), ...v, status: 'DRAFT', champion_id: null, created_at: now() }; S.tournaments.push(t); return { id: t.id }; });
+route('PUT', '/api/admin/tournaments/:id', 1, (c) => {
+  const t = getT(c.params.id), v = tInput(c.body); const mx = Math.max(0, ...S.participants.filter((p) => p.tournament_id === t.id).map((p) => p.slot));
+  if (v.max_slots < mx) throw bad(`Slot soni ${mx} dan kam bo'lishi mumkin emas (band slotlar bor).`);
+  if (v.type !== t.type && S.brackets[t.id]) throw bad("Setka yaratilgan, turini o'zgartirib bo'lmaydi."); Object.assign(t, v); return { ok: true };
+});
+route('DELETE', '/api/admin/tournaments/:id', 1, (c) => { const t = getT(c.params.id); const id = t.id;
+  S.tournaments = S.tournaments.filter((x) => x.id !== id); for (const k of ['participants', 'applications', 'matches', 'results']) S[k] = S[k].filter((x) => x.tournament_id !== id); delete S.brackets[id]; return { ok: true }; });
+route('POST', '/api/admin/tournaments/:id/status', 1, (c) => { const t = getT(c.params.id), s = String(c.body.status || ''); if (!STATUSES.includes(s)) throw bad("Status noto'g'ri."); t.status = s; return { ok: true }; });
+route('GET', '/api/admin/applications', 1, (c) => ({ applications: S.applications.filter((a) => a.status === (c.query.get('status') || 'pending')).sort((a, b) => b.created_at - a.created_at).map((a) => { const u = getUser(a.user_id), t = S.tournaments.find((x) => x.id === a.tournament_id); return { id: a.id, slot: a.slot, status: a.status, created_at: a.created_at, tournament_id: t.id, tournament: t.name, telegram_id: u.telegram_id, username: u.username, first_name: u.first_name, last_name: u.last_name, pubg_id: u.pubg_id, nickname: u.nickname }; }) }));
+route('POST', '/api/admin/applications/:id/decide', 1, (c) => {
+  const a = S.applications.find((x) => x.id === Number(c.params.id)); if (!a) throw new E(404, 'Ariza topilmadi.'); if (a.status !== 'pending') throw bad("Bu ariza allaqachon ko'rib chiqilgan.");
+  const ok = !!c.body.approve;
+  if (ok) S.participants.find((p) => p.tournament_id === a.tournament_id && p.user_id === a.user_id).status = 'approved';
+  else S.participants = S.participants.filter((p) => !(p.tournament_id === a.tournament_id && p.user_id === a.user_id));
+  a.status = ok ? 'approved' : 'rejected'; a.reason = String(c.body.reason || '').slice(0, 200) || null; notify(a.user_id, ok ? 'approved' : 'rejected'); return { ok: true };
+});
+route('DELETE', '/api/admin/tournaments/:id/participants/:uid', 1, (c) => { const t = getT(c.params.id); if (S.brackets[t.id]) throw bad("Setka yaratilgan. Avval setkani o'zgartiring.");
+  S.participants = S.participants.filter((p) => !(p.tournament_id === t.id && p.user_id === String(c.params.uid))); return { ok: true }; });
+route('POST', '/api/admin/tournaments/:id/bracket', 1, (c) => { const t = getT(c.params.id); if (t.type !== 'TDM') throw bad('Setka faqat TDM turnirlari uchun.'); const r = generateBracket(t.id); if (t.status === 'OPEN') t.status = 'LIVE'; return r; });
+route('POST', '/api/admin/matches/:id/room', 1, (c) => { const m = getMatch(c.params.id); m.room = str(c.body.room, 1, 40, 'Room'); m.room_pass = String(c.body.room_pass || '').trim().slice(0, 40); [m.player1_id, m.player2_id].forEach((p) => p && notify(p, 'match')); return { ok: true }; });
+route('POST', '/api/admin/matches/:id/players', 1, (c) => {
+  const m = getMatch(c.params.id); if (m.winner_id) throw bad("Natija kiritilgan match o'zgartirilmaydi.");
+  const p1 = c.body.player1_id || null, p2 = c.body.player2_id || null; if (p1 && p1 === p2) throw bad("Bir xil o'yinchi tanlanmagan bo'lishi kerak.");
+  for (const p of [p1, p2]) if (p && !isApproved(m.tournament_id, p)) throw bad("O'yinchi turnirda tasdiqlanmagan.");
+  m.player1_id = p1 && String(p1); m.player2_id = p2 && String(p2); return { ok: true };
+});
+route('POST', '/api/admin/matches/:id/winner', 1, (c) => {
+  const m = getMatch(c.params.id), t = getT(m.tournament_id), w = String(c.body.winner_id || '');
+  if (m.winner_id) throw new E(409, "Bu matchda g'olib allaqachon belgilangan."); if (!m.player1_id || !m.player2_id) throw bad("Match uchun ikkala o'yinchi ham belgilanmagan.");
+  if (w !== m.player1_id && w !== m.player2_id) throw bad("G'olib shu matchdagi o'yinchi bo'lishi kerak.");
+  const loser = w === m.player1_id ? m.player2_id : m.player1_id, isFinal = m.round === S.brackets[t.id].rounds;
+  m.winner_id = w; getUser(w).wins++; getUser(loser).losses++; notify(w, 'result'); notify(loser, 'result');
+  if (isFinal) finishTournament(t, w, loser); else { advance(m); notify(w, 'next_round'); }
+  return { ok: true, finished: isFinal };
+});
+route('POST', '/api/admin/tournaments/:id/winner', 1, (c) => {
+  const t = getT(c.params.id); if (t.type === 'TDM') throw bad("TDM turnirida g'olib final matchida belgilanadi."); if (t.status === 'FINISHED') throw new E(409, 'Turnir allaqachon yakunlangan.');
+  const w = String(c.body.user_id || ''); if (!isApproved(t.id, w)) throw bad("G'olib tasdiqlangan ishtirokchi bo'lishi kerak.");
+  getUser(w).wins++; finishTournament(t, w, null); return { ok: true };
+});
+route('POST', '/api/admin/players/:id/badges/:badge', 1, (c) => {
+  const b = BADGES.find((x) => x.id === Number(c.params.badge)); if (!b || !getUser(c.params.id)) throw new E(404, 'Topilmadi.');
+  if (S.userBadges.some((x) => x.user_id === c.params.id && x.badge_id === b.id)) return { ok: true, awarded: false };
+  S.userBadges.push({ user_id: c.params.id, badge_id: b.id, awarded_by: c.id, created_at: now() }); notify(c.params.id, 'badge'); return { ok: true, awarded: true };
+});
+route('DELETE', '/api/admin/players/:id/badges/:badge', 1, (c) => { S.userBadges = S.userBadges.filter((x) => !(x.user_id === c.params.id && x.badge_id === Number(c.params.badge))); return { ok: true }; });
+route('GET', '/api/admin/stats', 1, () => { const n = {}; S.notifications.forEach((x) => (n[x.status] = (n[x.status] || 0) + 1));
+  return { users: Object.keys(S.users).length, registered: Object.values(S.users).filter((u) => u.pubg_id).length, tournaments: S.tournaments.length, pending: S.applications.filter((a) => a.status === 'pending').length, matches: S.matches.length, notifications: n }; });
+route('GET', '/api/admin/notifications', 1, () => ({ notifications: S.notifications.slice(-50).reverse().map((x) => { const u = getUser(x.user_id) || {}; return { ...x, nickname: u.nickname, first_name: u.first_name }; }) }));
+route('GET', '/api/admin/settings', 1, () => ({ bot_configured: false, miniapp_url: null, dev_mode: false, admin_id: ADMIN_ID }));
+route('POST', '/api/admin/notify-test', 1, () => { throw bad("Bot xabarlari bu bitta faylli versiyada ishlamaydi (server kerak)."); });
+
+function call(path, method, body, tu) {
+  load();
+  if (!tu || !tu.id) throw new E(401, 'Telegram orqali kiring.');
+  const url = new URL(path, 'http://x'); method = method || 'GET';
+  const r = routes.find((x) => x.method === method && x.re.test(url.pathname)); if (!r) throw new E(404, 'Topilmadi.');
+  const id = String(tu.id), isAdmin = id === ADMIN_ID;
+  const snap = method === 'GET' ? null : JSON.stringify(S);
+  try {
+    const cur = S.users[id];
+    S.users[id] = { wins: 0, losses: 0, pubg_id: null, nickname: null, ...cur, telegram_id: id, username: tu.username || null, first_name: tu.first_name || null, last_name: tu.last_name || null, photo_url: tu.photo_url || (cur && cur.photo_url) || null, created_at: (cur && cur.created_at) || now() };
+    if (r.admin && !isAdmin) throw new E(403, "Ruxsat yo'q.");
+    const out = r.fn({ id, isAdmin, params: { ...url.pathname.match(r.re).groups }, query: url.searchParams, body: body || {} });
+    save(); return JSON.parse(JSON.stringify(out));
+  } catch (e) { if (snap) { S = JSON.parse(snap); save(); } throw e; }
+}
+root.__localApi = (path, method, body, tu) => new Promise((res, rej) => { try { res(call(path, method, body, tu)); } catch (e) { rej(e instanceof E ? new Error(e.message) : new Error("Ma'lumotni yuklashda xatolik yuz berdi. Qayta urinib ko'ring.")); } });
+if (typeof module !== 'undefined') module.exports = { call, E };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(() => {
+'use strict';
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#0a0a0b'); tg.setBackgroundColor('#0a0a0b'); } catch (e) {} }
+const qs = new URLSearchParams(location.search);
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ERR = "Ma'lumotni yuklashda xatolik yuz berdi. Qayta urinib ko'ring.";
+const ST = { OPEN: 'QABUL OCHIQ', LIVE: 'JARAYONDA', FINISHED: 'YAKUNLANGAN', DRAFT: 'TAYYORLANMOQDA' };
+const TITLES = { tournament: 'Turnir', player: "O'yinchi", search: "O'yinchi qidirish", badges: 'Nishonlar', admin: 'Admin panel', tform: 'Turnir', apps: 'Arizalar', notifs: 'Bildirishnomalar', settings: 'Sozlamalar' };
+
+/* ---------- API + kichik kesh ---------- */
+const cache = new Map();
+async function api(path, method, body, ttl) {
+  method = method || 'GET';
+  if (method === 'GET' && ttl) { const c = cache.get(path); if (c && c.t > Date.now()) return c.v; }
+  const tu = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || (qs.get('dev') ? { id: qs.get('dev'), first_name: qs.get('name') || 'Dev', username: 'dev' + qs.get('dev') } : null);
+  const j = await window.__localApi(path, method, body, tu);
+  if (method === 'GET' && ttl) cache.set(path, { t: Date.now() + ttl, v: j }); else if (method !== 'GET') cache.clear();
+  return j;
+}
+
+/* ---------- Holat ---------- */
+let me = null, tab = 'turnir', stack = [{ name: 'turnir' }], filter = 'ALL', cur = null, sel = null, tok = 0;
+const pname = (u) => (u ? (u.nickname || u.first_name || '—') : '—');
+const av = (u, cls) => `<div class="av ${cls || ''}">${u && u.photo_url ? `<img src="${esc(u.photo_url)}" data-i="${esc((pname(u)[0] || '?').toUpperCase())}" loading="lazy" referrerpolicy="no-referrer" alt="">` : esc((pname(u)[0] || '?').toUpperCase())}</div>`;
+document.addEventListener('error', (e) => { if (e.target.tagName === 'IMG') e.target.replaceWith(document.createTextNode(e.target.dataset.i || '?')); }, true);
+
+let tt;
+function toast(msg, kind) { const t = $('#toast'); t.textContent = msg; t.className = 'on ' + (kind || ''); clearTimeout(tt); tt = setTimeout(() => (t.className = ''), 2400); if (tg && tg.HapticFeedback) try { tg.HapticFeedback.notificationOccurred(kind === 'err' ? 'error' : 'success'); } catch (e) {} }
+function ask(msg) { return new Promise((res) => { if (tg && tg.showConfirm) tg.showConfirm(msg, (ok) => res(!!ok)); else res(window.confirm(msg)); }); }
+function sheet(html) { $('#sheet').innerHTML = html; $('#sheetBg').hidden = false; }
+function closeSheet() { $('#sheetBg').hidden = true; }
+$('#sheetBg').addEventListener('click', (e) => { if (e.target.id === 'sheetBg') closeSheet(); });
+const state = (icon, text, extra) => `<div class="state"><i>${icon}</i>${esc(text)}${extra || ''}</div>`;
+const when = (t) => [t.date, t.time].filter(Boolean).join(' · ') || 'Sana belgilanmagan';
+
+/* ---------- Navigatsiya ---------- */
+function nav(name, args) { stack.push({ name, args }); render(); window.scrollTo(0, 0); }
+function back() { if (stack.length > 1) { stack.pop(); render(); } }
+function switchTab(t) { tab = t; stack = [{ name: t }]; document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === t)); render(); window.scrollTo(0, 0); }
+if (tg && tg.BackButton) tg.BackButton.onClick(back);
+
+function setTop(v) {
+  const root = stack.length === 1, setup = me && me.needsSetup;
+  $('#tabs').hidden = !!setup;
+  if (tg && tg.BackButton) { if (root) tg.BackButton.hide(); else tg.BackButton.show(); }
+  $('#top').innerHTML = root || setup
+    ? `<div class="logo">NX</div><div class="brand">NEXAR <b>ESPORTS</b></div>${me && me.isAdmin ? '<span class="tag">ADMIN</span>' : ''}${me ? av(me) : ''}`
+    : `<button class="bk" data-act="back">←</button><div class="brand">${esc(TITLES[v.name] || '')}</div>`;
+}
+async function render() {
+  const my = ++tok, v = stack[stack.length - 1];
+  setTop(v);
+  if (me && me.needsSetup) { $('#view').innerHTML = setupHtml(); return; }
+  $('#view').innerHTML = '<div class="sk"></div><div class="sk"></div><div class="sk"></div>';
+  try { const html = await V[v.name](v.args || {}); if (my === tok) $('#view').innerHTML = html; }
+  catch (e) { if (my === tok) $('#view').innerHTML = `<div class="state err"><i>⚠️</i>${esc(e.message)}<div class="brow"><button class="btn g s" data-act="retry">Qayta urinish</button></div></div>`; }
+}
+
+/* ---------- Ko'rinishlar ---------- */
+const V = {};
+
+V.turnir = async () => {
+  const { tournaments } = await api('/api/tournaments', 'GET', null, 8000);
+  const list = tournaments.filter((t) => filter === 'ALL' || t.status === filter);
+  const chips = [['ALL', 'HAMMASI'], ['OPEN', 'QABUL OCHIQ'], ['LIVE', 'JARAYONDA'], ['FINISHED', 'YAKUNLANGAN']]
+    .map(([k, l]) => `<button class="chip ${filter === k ? 'on' : ''}" data-act="filter" data-f="${k}">${l}</button>`).join('');
+  const cards = list.map((t) => `<div class="card tc ${t.status}" data-act="open" data-id="${t.id}">
+    <div class="row"><span class="mode">${esc(t.type)}</span><span class="sp"></span><span class="st ${t.status}">${ST[t.status]}</span></div>
+    <h3 style="margin-top:8px">${esc(t.name)}</h3>
+    <div class="meta"><span>🗺 <b>${esc(t.map || '—')}</b></span><span>📅 <b>${esc(when(t))}</b></span><span>👥 <b>${t.taken}/${t.max_slots}</b></span></div>
+    <div class="bar"><i style="width:${Math.min(100, Math.round((t.taken / t.max_slots) * 100))}%"></i></div>
+    ${t.status === 'FINISHED' && t.champion_nick ? `<div class="sm gold" style="margin-top:8px">🏆 CHAMPION: <b>${esc(t.champion_nick)}</b></div>` : ''}
+    <div class="sm mu" style="margin-top:8px;text-align:right">${t.status === 'OPEN' ? 'KIRISH →' : 'KO\'RISH →'}</div></div>`).join('');
+  return `<div class="hero"><h1>PUBG MOBILE<br><em>TURNIRLAR</em></h1><p>Slotni band qiling, setkada o'z o'rningizni oling.</p></div>
+    <div class="chips">${chips}</div>
+    ${list.length ? cards : state('🏆', tournaments.length ? 'Hozircha faol turnirlar mavjud emas.' : 'Hozircha turnirlar mavjud emas.')}`;
+};
+
+/* --- turnir ichki sahifasi --- */
+const mcHtml = (m) => {
+  const row = (p) => `<div class="${p && m.winner_id === p.telegram_id ? 'w' : ''} ${p ? '' : 'e'}"><span>${esc(p ? pname(p) : '—')}</span>${p && m.winner_id === p.telegram_id ? '<span>🏆</span>' : ''}</div>`;
+  return `<div class="mc ${m.mine ? 'mine' : ''}" data-act="match" data-id="${m.id}">${row(m.p1)}${row(m.p2)}</div>`;
+};
+const gridHtml = () => {
+  const t = cur.tournament, by = {}; cur.participants.forEach((p) => (by[p.slot] = p));
+  let h = '';
+  for (let i = 1; i <= t.max_slots; i++) {
+    const p = by[i];
+    h += !p ? `<div class="slot ${sel === i ? 'sel' : ''}" data-act="slot" data-slot="${i}"><span class="n">${i}</span><span class="mu sm">${sel === i ? '✓' : 'BO\'SH'}</span></div>`
+      : `<div class="slot ${p.status} ${p.telegram_id === me.telegram_id ? 'mine' : ''}" data-act="slot" data-slot="${i}"><span class="n">${i}</span>${av(p)}<span class="nk">${esc(pname(p))}</span></div>`;
+  }
+  return h;
+};
+const applyHtml = () => {
+  const t = cur.tournament, my = cur.my;
+  if (my) return `<div class="card"><b class="gold">${my.status === 'approved' ? `✅ Siz ishtirokchisiz — slot #${my.slot}` : `⏳ Arizangiz qabul qilindi. Admin tasdiqlashini kuting (slot #${my.slot}).`}</b></div>`;
+  if (t.status === 'FINISHED') return '';
+  if (t.status !== 'OPEN') return '<div class="card mu">Hozir qabul yopiq.</div>';
+  if (cur.participants.length >= t.max_slots) return '<div class="card"><b>TURNIR TO\'LDI</b></div>';
+  return `<button class="btn" data-act="apply">ISHTIROK ETISH${sel ? ` — SLOT #${sel}` : ''}</button><div class="hint">Protokoldan bo'sh slotni tanlang yoki avtomatik slot oling.</div>`;
+};
+V.tournament = async ({ id }) => {
+  cur = await api('/api/tournaments/' + id); sel = null;
+  const { tournament: t, matches, rounds, results } = cur, isTDM = t.type === 'TDM', ad = me.isAdmin;
+  const champ = results.find((r) => r.placement === 1);
+  const approved = cur.participants.filter((p) => p.status === 'approved').length;
+  let bracket = '';
+  if (isTDM) {
+    if (rounds) {
+      let cols = '';
+      for (let r = 1; r <= rounds; r++) { const ms = matches.filter((m) => m.round === r); cols += `<div class="rd"><h4>${esc(ms[0] ? ms[0].round_name : '')}</h4>${ms.map(mcHtml).join('')}</div>`; }
+      if (champ) cols += `<div class="rd"><h4>CHAMPION</h4><div class="champ"><div class="t">🏆</div><b>${esc(champ.nickname)}</b></div></div>`;
+      bracket = `<div class="bracket">${cols}</div><div class="hint">Matchni bosib ma'lumotini ko'ring.</div>`;
+    } else bracket = state('🗂', 'Setka hali yaratilmagan.');
+  }
+  const mine = matches.filter((m) => (m.mine || ad) && m.p1 && m.p2);
+  const roomList = !isTDM ? '' : mine.length ? mine.map((m) => `<div class="card" data-act="match" data-id="${m.id}"><div class="row"><b>MATCH #${m.id}</b><span class="sp"></span><span class="mode">${esc(m.round_name)}</span></div>
+      <div style="margin-top:6px">${esc(pname(m.p1))} <span class="mu">VS</span> ${esc(pname(m.p2))}</div>
+      ${m.room !== null || m.room_pass !== null ? (m.room || m.room_pass ? `<div class="room">ROOM: <b>${esc(m.room || '—')}</b><br>ID/Parol: <b>${esc(m.room_pass || '—')}</b></div>` : '<div class="hint">Room hali kiritilmagan.</div>') : '<div class="hint">🔒 Room ma\'lumoti faqat match ishtirokchilariga ko\'rinadi.</div>'}</div>`).join('') : state('⚔️', "Sizga tegishli match hali yo'q.");
+  const admin = !ad ? '' : `<h3 class="sec">Admin boshqaruvi</h3><div class="card">
+    <div class="sm mu">Status:</div><div class="brow" style="flex-wrap:wrap">${['OPEN', 'LIVE', 'FINISHED', 'DRAFT'].map((s) => `<button class="btn s ${t.status === s ? 'gd' : 'g'}" style="min-width:45%" data-act="setstatus" data-s="${s}" ${t.status === s ? 'disabled' : ''}>${ST[s]}</button>`).join('')}</div>
+    <div class="brow"><button class="btn g s" data-act="tedit">✏️ Tahrirlash</button><button class="btn no s" data-act="tdel">🗑 O'chirish</button></div>
+    ${isTDM ? `<button class="btn ok s" style="margin-top:8px" data-act="gen">${rounds ? '♻️ SETKANI QAYTA YARATISH' : '🗂 SETKA YARATISH'} (${approved} o'yinchi)</button>` : ''}
+    ${!isTDM && t.status !== 'FINISHED' ? '<button class="btn gd s" style="margin-top:8px" data-act="tw">🏆 G\'OLIBNI BELGILASH</button>' : ''}</div>`;
+  return `<div class="card"><div class="row"><span class="mode">${esc(t.type)}</span><span class="sp"></span><span class="st ${t.status}">${ST[t.status]}</span></div>
+    <h2 style="margin-top:8px">${esc(t.name)}</h2><div class="mu sm" style="margin-top:4px">📅 ${esc(when(t))}</div></div>
+    ${champ && !isTDM ? `<div class="champ" style="margin-bottom:11px"><div class="t">🏆</div><span class="mu sm">CHAMPION</span><b>${esc(champ.nickname)}</b></div>` : ''}
+    <h3 class="sec">Turnir ma'lumoti</h3><div class="card">
+      <div class="row"><span class="mu sp">O'yin turi</span><b>${esc(t.type)}</b></div>
+      <div class="row"><span class="mu sp">Map</span><b>${esc(t.map || '—')}</b></div>
+      <div class="row"><span class="mu sp">Format</span><b>${isTDM ? 'Setka (Bracket)' : "Oddiy ro'yxat"}</b></div>
+      <div class="row"><span class="mu sp">Slotlar</span><b>${cur.participants.length}/${t.max_slots}</b></div>
+      <div class="row"><span class="mu sp">Sana / vaqt</span><b>${esc(when(t))}</b></div>
+      ${t.description ? `<div class="hint" style="margin-top:8px;font-size:13px">${esc(t.description)}</div>` : ''}</div>
+    <div id="applybox">${applyHtml()}</div>
+    <h3 class="sec"><span>Ishtirokchilar / Protokol</span><span>${approved} tasdiqlangan</span></h3><div class="grid" id="slotgrid">${gridHtml()}</div>
+    ${isTDM ? `<h3 class="sec">Setka</h3>${bracket}<h3 class="sec">Match / Room</h3>${roomList}` : ''}
+    <h3 class="sec">Natijalar</h3>${results.length ? `<div class="card">${results.map((r) => `<div class="ar"><b class="gold">#${r.placement}</b>${av(r)}<b>${esc(r.nickname)}</b></div>`).join('')}</div>` : state('📊', 'Natijalar hali yo\'q.')}
+    ${admin}`;
+};
+
+/* --- profil --- */
+const statsHtml = (u) => `<div class="stats"><div><b>${u.wins}</b><span>G'ALABALAR</span></div><div><b>${u.losses}</b><span>MAG'LUBIYATLAR</span></div><div><b>${u.tournaments}</b><span>TURNIRLAR</span></div></div>`;
+const badgesHtml = (u) => u.badges.length ? `<div class="bg">${u.badges.map((b) => `<div class="bd on ${b.code === 'CHAMPION' ? 'ch' : ''}"><i>${b.icon}</i><span>${esc(b.name)}</span></div>`).join('')}</div>` : state('🏅', 'Hozircha nishonlar mavjud emas.');
+const histHtml = (u) => u.history.length ? `<div class="card">${u.history.map((h) => `<div class="ar" data-act="open" data-id="${h.id}"><div class="sp"><b>${esc(h.name)}</b><div class="sm mu">${esc(h.type)}</div></div>${h.placement ? `<span class="gold"><b>#${h.placement}</b></span>` : ''}<span class="st ${h.status}">${ST[h.status]}</span></div>`).join('')}</div>` : state('📜', "Turnir tarixi hali yo'q.");
+V.profil = async () => {
+  const u = await api('/api/me'); me = u;
+  return `<div class="row" style="margin-bottom:14px">${av(u, 'l')}<div><h2>${esc([u.first_name].filter(Boolean).join(' '))}</h2><div class="mu sm">${u.username ? '@' + esc(u.username) : 'username yo\'q'}</div>
+    <div class="sm" style="margin-top:4px">🎮 <b>${esc(u.nickname)}</b> · 🆔 <b>${esc(u.pubg_id)}</b></div></div></div>
+    ${statsHtml(u)}
+    <div class="brow" style="margin:0 0 6px"><button class="btn g s" data-act="search">🔎 O'YINCHI QIDIRISH</button><button class="btn g s" data-act="editme">✏️ Tahrirlash</button></div>
+    ${u.isAdmin ? '<button class="btn gd s" style="margin-top:8px" data-act="admin">⚙️ ADMIN PANEL</button>' : ''}
+    <h3 class="sec"><span>Nishonlar</span><span style="cursor:pointer;color:var(--red)" data-act="badges">Hammasi →</span></h3>${badgesHtml(u)}
+    <h3 class="sec">Turnir tarixi</h3>${histHtml(u)}`;
+};
+V.badges = async () => {
+  const [{ badges }, u] = await Promise.all([api('/api/badges', 'GET', null, 60000), api('/api/me')]);
+  const own = new Set(u.badges.map((b) => b.id));
+  return `<div class="bg" style="grid-template-columns:repeat(2,1fr)">${badges.map((b) => `<div class="bd ${own.has(b.id) ? 'on' : ''} ${b.code === 'CHAMPION' ? 'ch' : ''}" style="padding:14px 8px"><i>${b.icon}</i><b style="font-size:13px">${esc(b.name)}</b><span style="display:block;margin-top:3px">${esc(b.description)}</span></div>`).join('')}</div>`;
+};
+V.player = async ({ id }) => {
+  const u = await api('/api/players/' + id); const self = u.telegram_id === me.telegram_id;
+  return `<div class="row" style="margin-bottom:14px">${av(u, 'l')}<div><h2>${esc(u.nickname || u.first_name)}</h2><div class="mu sm">${u.username ? '@' + esc(u.username) : 'username yo\'q'} · PUBG ID: ${esc(u.pubg_id || '—')}</div></div></div>
+    ${statsHtml(u)}${badgesHtml(u)}
+    ${!self ? `<button class="btn" style="margin-top:12px" data-act="msg" data-u="${esc(u.username || '')}">💬 HABAR YOZISH</button>` : ''}
+    ${me.isAdmin ? `<button class="btn gd" style="margin-top:8px" data-act="award" data-id="${esc(u.telegram_id)}">🏅 NISHON BERISH</button>` : ''}
+    <h3 class="sec">Turnir tarixi</h3>${histHtml(u)}`;
+};
+V.search = async () => `<input id="q" placeholder="NIK yoki ID orqali qidirish..." autocomplete="off" enterkeyhint="search"><div id="res" style="margin-top:12px">${state('🔎', 'Kamida 2 ta belgi kiriting.')}</div>`;
+
+/* --- admin --- */
+V.admin = async () => {
+  const s = await api('/api/admin/stats');
+  const n = s.notifications;
+  return `<div class="stats"><div><b>${s.registered}</b><span>O'YINCHILAR</span></div><div><b>${s.tournaments}</b><span>TURNIRLAR</span></div><div><b>${s.pending}</b><span>ARIZALAR</span></div></div>
+    <button class="btn" data-act="tnew">➕ TURNIR YARATISH</button>
+    <div class="brow"><button class="btn g" data-act="tab" data-tab="turnir">🏆 Turnirlar</button><button class="btn g" data-act="apps">📨 Arizalar (${s.pending})</button></div>
+    <div class="brow"><button class="btn g" data-act="search">🔎 O'yinchilar</button><button class="btn g" data-act="notifs">🔔 Bot xabarlari</button></div>
+    <button class="btn g" style="margin-top:10px" data-act="settings">⚙️ Sozlamalar</button>
+    <div class="hint" style="margin-top:12px">Jami foydalanuvchi: ${s.users} · Matchlar: ${s.matches} · Xabarlar: yuborildi ${n.sent || 0}, xato ${n.failed || 0}, o'tkazildi ${n.skipped || 0}</div>`;
+};
+V.tform = async ({ id }) => {
+  const t = id ? (await api('/api/tournaments/' + id)).tournament : { name: '', type: 'TDM', map: '', date: '', time: '', max_slots: 16, description: '' };
+  return `<label>Turnir nomi</label><input id="f_name" value="${esc(t.name)}" maxlength="60">
+    <label>O'yin turi</label><select id="f_type">${['TDM', 'LIVIK', 'ERANGEL', 'BOSHQA'].map((x) => `<option ${t.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select>
+    <div class="hint" id="f_hint">TDM tanlansa setka (bracket) avtomatik faol bo'ladi.</div>
+    <label>Map</label><input id="f_map" value="${esc(t.map)}" maxlength="40" placeholder="Masalan: Warehouse">
+    <label>Sana</label><input id="f_date" type="date" value="${esc(t.date)}">
+    <label>Vaqt</label><input id="f_time" type="time" value="${esc(t.time)}">
+    <label>Slot soni (8, 16, 24, 32, 64 ...)</label><input id="f_slots" inputmode="numeric" value="${t.max_slots}">
+    <label>Qo'shimcha ma'lumot</label><textarea id="f_desc" rows="3" maxlength="500">${esc(t.description)}</textarea>
+    <button class="btn" style="margin-top:16px" data-act="tsave" data-id="${id || ''}">${id ? 'SAQLASH' : 'YARATISH'}</button>
+    ${id ? '' : '<div class="hint">Yangi turnir "TAYYORLANMOQDA" holatida bo\'ladi. "QABUL OCHIQ" qilganingizda botdan e\'lon ketadi.</div>'}`;
+};
+V.apps = async () => {
+  const { applications } = await api('/api/admin/applications?status=pending');
+  if (!applications.length) return state('📨', 'Kutilayotgan arizalar yo\'q.');
+  return applications.map((a) => `<div class="card"><div class="row"><b class="sp">${esc(a.nickname)}</b><span class="mode">SLOT #${a.slot}</span></div>
+    <div class="meta"><span>🏆 <b>${esc(a.tournament)}</b></span><span>👤 <b>${esc([a.first_name, a.last_name].filter(Boolean).join(' '))}</b></span><span>@${esc(a.username || '—')}</span><span>TG ID: <b>${esc(a.telegram_id)}</b></span><span>PUBG ID: <b>${esc(a.pubg_id)}</b></span></div>
+    <div class="brow"><button class="btn ok s" data-act="decide" data-id="${a.id}" data-ok="1">✅ TASDIQLASH</button><button class="btn no s" data-act="reject" data-id="${a.id}">❌ RAD ETISH</button></div></div>`).join('');
+};
+V.notifs = async () => {
+  const { notifications: n } = await api('/api/admin/notifications');
+  return n.length ? `<div class="card">${n.map((x) => `<div class="ar"><div class="sp"><b>${esc(x.type)}</b><div class="sm mu">${esc(x.nickname || x.first_name || '—')} · ${new Date(x.created_at).toLocaleString('uz')}${x.error ? ' · ' + esc(x.error) : ''}</div></div><span class="pill ${x.status}">${x.status}</span></div>`).join('')}</div>` : state('🔔', 'Hozircha xabarlar yo\'q.');
+};
+V.settings = async () => {
+  const s = await api('/api/admin/settings');
+  return `<div class="card"><div class="row"><span class="mu sp">Bot</span><b>${s.bot_configured ? '✅ ulangan' : '❌ BOT_TOKEN yo\'q'}</b></div>
+    <div class="row"><span class="mu sp">Admin ID</span><b>${esc(s.admin_id)}</b></div>
+    <div class="row"><span class="mu sp">Mini App URL</span><b>${esc(s.miniapp_url || '—')}</b></div>
+    <div class="row"><span class="mu sp">DEV_MODE</span><b>${s.dev_mode ? '⚠️ yoqilgan' : 'o\'chiq'}</b></div></div>
+    <button class="btn" data-act="ntest">📨 Test xabar yuborish (o'zimga)</button>`;
+};
+
+/* --- birinchi kirish --- */
+const setupHtml = () => `<div class="hero"><h1>XUSH KELIBSIZ<br><em>NEXAR ESPORTS</em></h1><p>Turnirlarda qatnashish uchun PUBG MOBILE ma'lumotlaringizni kiriting. Bu faqat bir marta so'raladi.</p></div>
+  <label>PUBG MOBILE ID (faqat raqam)</label><input id="s_id" inputmode="numeric" maxlength="15" placeholder="Masalan: 5123456789">
+  <label>NIK / Nickname</label><input id="s_nick" maxlength="24" placeholder="O'yindagi nomingiz">
+  <button class="btn" style="margin-top:16px" data-act="setup">SAQLASH</button>`;
+
+/* ---------- Harakatlar ---------- */
+const run = (fn) => async (el, ev) => { try { await fn(el, ev); } catch (e) { toast(e.message, 'err'); } };
+const A = {
+  back, retry: () => render(),
+  tab: (el) => switchTab(el.dataset.tab),
+  filter: (el) => { filter = el.dataset.f; render(); },
+  open: (el) => nav('tournament', { id: el.dataset.id }),
+  search: () => nav('search'), badges: () => nav('badges'), admin: () => nav('admin'), apps: () => nav('apps'), notifs: () => nav('notifs'), settings: () => nav('settings'),
+  tnew: () => nav('tform', {}), tedit: () => nav('tform', { id: cur.tournament.id }),
+  slot: (el) => {
+    const n = Number(el.dataset.slot), p = cur.participants.find((x) => x.slot === n), t = cur.tournament;
+    if (p) {
+      sheet(`<div class="row">${av(p, 'l')}<div><h3>${esc(pname(p))}</h3><div class="mu sm">Slot #${n} · ${p.status === 'approved' ? '✅ Band' : '⏳ Kutilmoqda'}</div>${p.username ? `<div class="sm">@${esc(p.username)}</div>` : ''}${p.pubg_id ? `<div class="sm">PUBG ID: ${esc(p.pubg_id)}</div>` : ''}</div></div>
+        <div class="brow"><button class="btn g s" data-act="pl" data-id="${esc(p.telegram_id)}">Profil</button>${me.isAdmin ? `<button class="btn no s" data-act="kick" data-id="${esc(p.telegram_id)}">Slotdan olib tashlash</button>` : ''}</div>`);
+    } else if (t.status !== 'OPEN' || cur.my) toast(cur.my ? 'Siz allaqachon ishtirokchisiz.' : 'Bu slot bo\'sh. Qabul hozir yopiq.');
+    else { sel = sel === n ? null : n; $('#slotgrid').innerHTML = gridHtml(); $('#applybox').innerHTML = applyHtml(); }
+  },
+  pl: (el) => { closeSheet(); nav('player', { id: el.dataset.id }); },
+  apply: run(async (el) => { el.disabled = true; try { await api(`/api/tournaments/${cur.tournament.id}/apply`, 'POST', { slot: sel }); toast('Arizangiz qabul qilindi.', 'ok'); render(); } finally { el.disabled = false; } }),
+  match: (el) => {
+    const m = cur.matches.find((x) => x.id === Number(el.dataset.id)); if (!m) return;
+    const ad = me.isAdmin, apr = cur.participants.filter((p) => p.status === 'approved');
+    const opts = (sv) => `<option value="">— bo'sh —</option>${apr.map((p) => `<option value="${esc(p.telegram_id)}" ${p.telegram_id === sv ? 'selected' : ''}>${esc(pname(p))}</option>`).join('')}`;
+    sheet(`<div class="row"><h3 class="sp">MATCH #${m.id}</h3><span class="mode">${esc(m.round_name)}</span></div>
+      <div class="card" style="margin-top:10px"><div class="row">${av(m.p1)}<b class="sp">${esc(pname(m.p1))}</b>${m.winner_id && m.winner_id === (m.p1 || {}).telegram_id ? '🏆' : ''}</div><div class="mu sm" style="margin:6px 0 6px 40px">VS</div><div class="row">${av(m.p2)}<b class="sp">${esc(pname(m.p2))}</b>${m.winner_id && m.winner_id === (m.p2 || {}).telegram_id ? '🏆' : ''}</div></div>
+      ${m.room !== null ? (m.room || m.room_pass ? `<div class="room">ROOM: <b>${esc(m.room || '—')}</b><br>ID/Parol: <b>${esc(m.room_pass || '—')}</b></div>` : '<div class="hint">Room hali kiritilmagan.</div>') : '<div class="hint">🔒 Room ma\'lumoti faqat match ishtirokchilariga ko\'rinadi.</div>'}
+      ${ad ? `<h3 class="sec">Admin</h3>
+        <label>Room</label><input id="m_room" value="${esc(m.room || '')}" maxlength="40"><label>ID / Parol</label><input id="m_pass" value="${esc(m.room_pass || '')}" maxlength="40">
+        <button class="btn g s" style="margin-top:8px" data-act="mroom" data-id="${m.id}">Room saqlash (o'yinchilarga xabar ketadi)</button>
+        ${!m.winner_id ? `<label>O'yinchilar (yarim final/final juftligini belgilash)</label><select id="m_p1">${opts((m.p1 || {}).telegram_id)}</select><select id="m_p2" style="margin-top:6px">${opts((m.p2 || {}).telegram_id)}</select>
+        <button class="btn g s" style="margin-top:8px" data-act="mplayers" data-id="${m.id}">Juftlikni saqlash</button>
+        ${m.p1 && m.p2 ? `<div class="brow"><button class="btn ok s" data-act="mwin" data-id="${m.id}" data-w="${esc(m.p1.telegram_id)}">${esc(pname(m.p1))} WIN</button><button class="btn ok s" data-act="mwin" data-id="${m.id}" data-w="${esc(m.p2.telegram_id)}">${esc(pname(m.p2))} WIN</button></div>` : ''}` : ''}` : ''}`);
+  },
+  mroom: run(async (el) => { await api(`/api/admin/matches/${el.dataset.id}/room`, 'POST', { room: $('#m_room').value, room_pass: $('#m_pass').value }); closeSheet(); toast('Saqlandi', 'ok'); render(); }),
+  mplayers: run(async (el) => { await api(`/api/admin/matches/${el.dataset.id}/players`, 'POST', { player1_id: $('#m_p1').value || null, player2_id: $('#m_p2').value || null }); closeSheet(); toast('Saqlandi', 'ok'); render(); }),
+  mwin: run(async (el) => { if (!(await ask('G\'olibni tasdiqlaysizmi? Buni qaytarib bo\'lmaydi.'))) return; const r = await api(`/api/admin/matches/${el.dataset.id}/winner`, 'POST', { winner_id: el.dataset.w }); closeSheet(); toast(r.finished ? '🏆 Turnir yakunlandi!' : 'G\'olib keyingi bosqichga o\'tdi', 'ok'); render(); }),
+  setstatus: run(async (el) => {
+    const s = el.dataset.s, t = cur.tournament;
+    if (s === 'OPEN' && t.status !== 'OPEN' && !(await ask('Qabul ochilsa, barcha o\'yinchilarga bot orqali e\'lon yuboriladi. Davom etamizmi?'))) return;
+    if (s === 'FINISHED' && !(await ask('Turnir yakunlansinmi? Yangi arizalar qabul qilinmaydi.'))) return;
+    await api(`/api/admin/tournaments/${t.id}/status`, 'POST', { status: s }); toast('Status yangilandi', 'ok'); render();
+  }),
+  tdel: run(async () => { if (!(await ask('Turnirni o\'chirishni tasdiqlaysizmi?'))) return; await api('/api/admin/tournaments/' + cur.tournament.id, 'DELETE'); toast('O\'chirildi', 'ok'); stack = [{ name: 'turnir' }]; render(); }),
+  gen: run(async () => { const r = await api(`/api/admin/tournaments/${cur.tournament.id}/bracket`, 'POST'); toast(`Setka yaratildi (${r.players} o'yinchi)`, 'ok'); render(); }),
+  kick: run(async (el) => { if (!(await ask('O\'yinchini slotdan olib tashlaysizmi?'))) return; await api(`/api/admin/tournaments/${cur.tournament.id}/participants/${el.dataset.id}`, 'DELETE'); closeSheet(); render(); }),
+  tw: () => {
+    const apr = cur.participants.filter((p) => p.status === 'approved');
+    if (!apr.length) return toast('Tasdiqlangan ishtirokchi yo\'q.', 'err');
+    sheet(`<h3>G'olibni tanlang</h3><div class="card" style="margin-top:10px">${apr.map((p) => `<div class="ar" data-act="pickw" data-id="${esc(p.telegram_id)}">${av(p)}<b class="sp">${esc(pname(p))}</b><span class="mu sm">#${p.slot}</span></div>`).join('')}</div>`);
+  },
+  pickw: run(async (el) => { if (!(await ask('Bu o\'yinchi turnir g\'olibi (CHAMPION) sifatida belgilansinmi?'))) return; await api(`/api/admin/tournaments/${cur.tournament.id}/winner`, 'POST', { user_id: el.dataset.id }); closeSheet(); toast('🏆 CHAMPION belgilandi', 'ok'); render(); }),
+  tsave: run(async (el) => {
+    const b = { name: $('#f_name').value, type: $('#f_type').value, map: $('#f_map').value, date: $('#f_date').value, time: $('#f_time').value, max_slots: Number($('#f_slots').value), description: $('#f_desc').value };
+    const id = el.dataset.id;
+    const r = await api(id ? '/api/admin/tournaments/' + id : '/api/admin/tournaments', id ? 'PUT' : 'POST', b);
+    toast('Saqlandi', 'ok'); stack.pop(); if (!id) stack.push({ name: 'tournament', args: { id: r.id } }); render();
+  }),
+  decide: run(async (el) => { await api(`/api/admin/applications/${el.dataset.id}/decide`, 'POST', { approve: true }); toast('Tasdiqlandi', 'ok'); render(); }),
+  reject: (el) => sheet(`<h3>Rad etish</h3><label>Sabab (ixtiyoriy)</label><input id="r_reason" maxlength="200"><button class="btn no" style="margin-top:12px" data-act="rejgo" data-id="${el.dataset.id}">RAD ETISH</button>`),
+  rejgo: run(async (el) => { await api(`/api/admin/applications/${el.dataset.id}/decide`, 'POST', { approve: false, reason: $('#r_reason').value }); closeSheet(); toast('Rad etildi', 'ok'); render(); }),
+  msg: (el) => {
+    const u = el.dataset.u;
+    if (u) { const url = 'https://t.me/' + u; if (tg && tg.openTelegramLink) tg.openTelegramLink(url); else window.open(url, '_blank'); }
+    else sheet(`<h3>Xabar yozib bo'lmadi</h3><p class="mu">Bu o'yinchi Telegram'da username o'rnatmagan. Telegram maxfiylik cheklovlari sababli, username bo'lmasa shaxsiy chatni ilova orqali ochib bo'lmaydi.</p><button class="btn g" data-act="close">Yopish</button>`);
+  },
+  close: closeSheet,
+  award: run(async (el) => {
+    const id = el.dataset.id, [{ badges }, p] = await Promise.all([api('/api/badges', 'GET', null, 60000), api('/api/players/' + id)]);
+    const own = new Set(p.badges.map((b) => b.id));
+    sheet(`<h3>Nishon berish</h3><div class="bg" style="margin-top:12px;grid-template-columns:repeat(2,1fr)">${badges.map((b) => `<div class="bd ${own.has(b.id) ? 'on' : ''}" style="opacity:1;cursor:pointer" data-act="${own.has(b.id) ? 'unbadge' : 'dobadge'}" data-id="${esc(id)}" data-b="${b.id}"><i>${b.icon}</i><b style="font-size:12.5px">${esc(b.name)}</b><span style="display:block">${own.has(b.id) ? 'Olib tashlash' : 'Berish'}</span></div>`).join('')}</div>`);
+  }),
+  dobadge: run(async (el) => { await api(`/api/admin/players/${el.dataset.id}/badges/${el.dataset.b}`, 'POST'); closeSheet(); toast('Nishon berildi 🏅', 'ok'); render(); }),
+  unbadge: run(async (el) => { if (!(await ask('Nishonni olib tashlaysizmi?'))) return; await api(`/api/admin/players/${el.dataset.id}/badges/${el.dataset.b}`, 'DELETE'); closeSheet(); toast('Olib tashlandi', 'ok'); render(); }),
+  editme: () => sheet(`<h3>Profilni tahrirlash</h3><label>PUBG ID</label><input id="s_id" inputmode="numeric" maxlength="15" value="${esc(me.pubg_id)}"><label>NIK</label><input id="s_nick" maxlength="24" value="${esc(me.nickname)}"><button class="btn" style="margin-top:14px" data-act="setup">SAQLASH</button>`),
+  setup: run(async () => {
+    const id = $('#s_id').value.trim(), nick = $('#s_nick').value.trim();
+    if (!/^\d{5,15}$/.test(id)) throw new Error('PUBG ID faqat raqamlardan iborat bo\'lishi kerak (5-15 raqam).');
+    if (nick.length < 2) throw new Error('NIK kamida 2 ta belgi bo\'lsin.');
+    const u = await api('/api/me/profile', 'POST', { pubg_id: id, nickname: nick });
+    me = { ...me, ...u, needsSetup: false }; closeSheet(); toast('Saqlandi ✅', 'ok'); render();
+  }),
+  ntest: run(async () => { await api('/api/admin/notify-test', 'POST'); toast('Test xabar yuborildi', 'ok'); }),
+};
+document.addEventListener('click', (e) => { const el = e.target.closest('[data-act]'); if (el && A[el.dataset.act]) A[el.dataset.act](el, e); });
+
+/* PUBG ID: faqat raqam (harf, belgi, bo'sh joy, emoji kiritilmaydi) */
+document.addEventListener('input', (e) => {
+  if (e.target.id === 's_id') e.target.value = e.target.value.replace(/\D/g, '');
+  if (e.target.id === 'q') { clearTimeout(A._d); A._d = setTimeout(doSearch, 350); }
+});
+async function doSearch() {
+  const q = ($('#q') || {}).value || '', box = $('#res'); if (!box) return;
+  if (q.trim().length < 2) { box.innerHTML = state('🔎', 'Kamida 2 ta belgi kiriting.'); return; }
+  try {
+    const { players } = await api('/api/players?q=' + encodeURIComponent(q.trim()), 'GET', null, 5000);
+    box.innerHTML = players.length ? players.map((p) => `<div class="card" data-act="pl" data-id="${esc(p.telegram_id)}"><div class="row">${av(p)}<div class="sp"><b>${esc(p.nickname)}</b><div class="sm mu">ID: ${esc(p.pubg_id)}${p.username ? ' · @' + esc(p.username) : ''}</div></div><div class="sm">🏆${p.wins} · ${p.losses}</div></div>
+      <div class="sm" style="margin-top:6px">${p.badges.map((b) => b.icon).join(' ') || '<span class="mu">nishon yo\'q</span>'}</div></div>`).join('') : state('🔎', 'O\'yinchi topilmadi.');
+  } catch (err) { box.innerHTML = state('⚠️', err.message); }
+}
+
+/* ---------- Ishga tushirish (splash → Telegram user → profil) ---------- */
+(async function boot() {
+  const min = new Promise((r) => setTimeout(r, 1100));
+  try {
+    $('#spSub').textContent = 'Telegram aniqlanmoqda...';
+    const u = await api('/api/me');
+    $('#spSub').textContent = 'Profilga ulanmoqda...';
+    me = u; await min;
+  } catch (e) {
+    $('#splash').innerHTML = `<div class="sp-logo">NX</div><div class="state err" style="padding:0 24px">${esc(e.message)}<div class="hint">Bu ilova Telegram bot ichidagi Mini App tugmasi orqali ochiladi.</div></div>`;
+    return;
+  }
+  try { const tu = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; if (tu && tu.allows_write_to_pm === false && tg.requestWriteAccess) tg.requestWriteAccess(); } catch (e) {}
+  $('#app').hidden = false; $('#splash').classList.add('out'); setTimeout(() => $('#splash').remove(), 400);
+  render();
+})();
+})();
+
+</script>
+</body>
+</html>
